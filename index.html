@@ -1,0 +1,385 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ResuMatch AI | Resume Analyser</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #080b18;
+    color: #f4f5ff;
+    min-height: 100vh;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 8%;
+    border-bottom: 1px solid #20243b;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #a78bfa, #38bdf8);
+    color: transparent;
+    background-clip: text;
+}
+
+.badge {
+    border: 1px solid #37305d;
+    color: #c4b5fd;
+    background: #18152c;
+    border-radius: 30px;
+    padding: 9px 15px;
+    font-size: 12px;
+}
+
+main {
+    max-width: 1100px;
+    margin: 55px auto;
+    padding: 0 24px;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 42px;
+}
+
+.hero h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.2;
+    margin-bottom: 16px;
+}
+
+.gradient {
+    background: linear-gradient(90deg, #a78bfa, #38bdf8);
+    color: transparent;
+    background-clip: text;
+}
+
+.hero p {
+    color: #969bb8;
+    line-height: 1.7;
+}
+
+.upload-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.card {
+    background: linear-gradient(145deg, #151a30, #101426);
+    border: 1px solid #2a3150;
+    border-radius: 20px;
+    padding: 27px;
+    transition: .25s;
+}
+
+.card:hover {
+    border-color: #8b5cf6;
+    transform: translateY(-3px);
+}
+
+.card h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.card p {
+    color: #9299b8;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 22px;
+}
+
+.drop-zone {
+    border: 1px dashed #51577c;
+    border-radius: 14px;
+    padding: 30px 12px;
+    text-align: center;
+    background: #0c1020;
+}
+
+.icon {
+    font-size: 34px;
+    margin-bottom: 12px;
+}
+
+input[type="file"] {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+    color: #c5c9e0;
+    font-size: 12px;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.analyse {
+    display: block;
+    width: 100%;
+    margin: 28px 0;
+    padding: 17px;
+    font-size: 16px;
+    color: white;
+    background: linear-gradient(90deg, #7c3aed, #2563eb);
+    box-shadow: 0 8px 30px #5835d344;
+}
+
+.analyse:hover {
+    filter: brightness(1.15);
+    transform: translateY(-2px);
+}
+
+.status {
+    color: #9da4c4;
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 22px;
+}
+
+.results {
+    display: none;
+    background: linear-gradient(145deg, #171b34, #101426);
+    border: 1px solid #38305f;
+    border-radius: 22px;
+    padding: 30px;
+    margin-bottom: 40px;
+    animation: appear .4s ease;
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.result-heading {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.score {
+    font-size: 64px;
+    font-weight: 800;
+    margin: 12px 0;
+    background: linear-gradient(90deg, #c4b5fd, #38bdf8);
+    color: transparent;
+    background-clip: text;
+}
+
+.result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.skill-box {
+    background: #0b1020;
+    border: 1px solid #292f4c;
+    padding: 20px;
+    border-radius: 14px;
+}
+
+.skill-box h3 {
+    margin-bottom: 15px;
+    font-size: 15px;
+}
+
+.skill-list {
+    color: #aeb5d1;
+    font-size: 14px;
+    line-height: 2;
+    overflow-wrap: anywhere;
+}
+
+footer {
+    text-align: center;
+    border-top: 1px solid #20243b;
+    padding: 25px;
+    color: #777e9e;
+    font-size: 12px;
+}
+
+@media(max-width: 650px) {
+    header { padding: 20px; }
+    main { margin-top: 35px; }
+    .upload-grid, .result-grid { grid-template-columns: 1fr; }
+    .score { font-size: 52px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">✦ ResuMatch AI</div>
+    <div class="badge">✦ SMART CAREER MATCHING</div>
+</header>
+
+<main>
+
+    <section class="hero">
+        <h1>Find Your <span class="gradient">Perfect Match.</span></h1>
+        <p>Analyse your resume against a job description.<br>
+        Discover matching skills and identify areas to improve.</p>
+    </section>
+
+    <section class="upload-grid">
+
+        <div class="card">
+            <h2>📄 Upload Resume</h2>
+            <p>Choose the candidate's resume for analysis.</p>
+            <div class="drop-zone">
+                <div class="icon">📑</div>
+                <div>Select your resume file</div>
+                <input id="resumeFile" type="file"
+                    accept=".txt,.pdf,.docx">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💼 Job Description</h2>
+            <p>Choose the job description you want to match.</p>
+            <div class="drop-zone">
+                <div class="icon">🎯</div>
+                <div>Select the job description</div>
+                <input id="jobFile" type="file"
+                    accept=".txt,.pdf,.docx">
+            </div>
+        </div>
+
+    </section>
+
+    <button class="analyse" id="analyseButton">
+        ✨ Analyse Resume Match
+    </button>
+
+    <div class="status" id="status">
+        Your files stay on your device in this demo.
+    </div>
+
+    <section class="results" id="results">
+        <div class="result-heading">
+            <div class="badge">ANALYSIS COMPLETE</div>
+            <div class="score" id="score">0%</div>
+            <h2>Resume Compatibility</h2>
+            <p id="summary" style="color:#a2a9c7;margin-top:10px"></p>
+        </div>
+
+        <div class="result-grid">
+            <div class="skill-box">
+                <h3>✅ Matching Terms</h3>
+                <div class="skill-list" id="matched"></div>
+            </div>
+            <div class="skill-box">
+                <h3>🎯 Terms to Improve</h3>
+                <div class="skill-list" id="missing"></div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    ResuMatch AI · Resume Analysis & Job Matching
+</footer>
+
+<script>
+const resumeInput = document.getElementById("resumeFile");
+const jobInput = document.getElementById("jobFile");
+const statusText = document.getElementById("status");
+
+async function readText(file) {
+    const name = file.name.toLowerCase();
+
+    if (name.endsWith(".txt")) {
+        return await file.text();
+    }
+
+    throw new Error(
+        "This standalone demo reads TXT files only. PDF and DOCX require a document parser."
+    );
+}
+
+document.getElementById("analyseButton").addEventListener("click", async () => {
+    const resumeFile = resumeInput.files[0];
+    const jobFile = jobInput.files[0];
+
+    if (!resumeFile || !jobFile) {
+        statusText.textContent = "Please select both files first.";
+        return;
+    }
+
+    try {
+        statusText.textContent = "Analysing your files...";
+
+        const resume = (await readText(resumeFile)).toLowerCase();
+        const job = (await readText(jobFile)).toLowerCase();
+
+        const stopWords = new Set([
+            "the", "and", "for", "with", "this", "that",
+            "from", "you", "your", "are", "our", "will",
+            "have", "has", "was", "were", "who", "what",
+            "their", "they", "them", "into", "about",
+            "job", "work", "candidate", "skills", "skill"
+        ]);
+
+        const terms = text => {
+            const found = text.match(/[a-z][a-z+#.]*/g) || [];
+            return [...new Set(found.filter(
+                word => word.length > 1 && !stopWords.has(word)
+            ))];
+        };
+
+        const jobTerms = terms(job);
+        const resumeTerms = new Set(terms(resume));
+
+        if (jobTerms.length === 0) {
+            throw new Error("The job description contains no analysable terms.");
+        }
+
+        const matched = jobTerms.filter(word => resumeTerms.has(word));
+        const missing = jobTerms.filter(word => !resumeTerms.has(word));
+        const percentage = Math.round(matched.length / jobTerms.length * 100);
+
+        document.getElementById("score").textContent = percentage + "%";
+        document.getElementById("summary").textContent =
+            `${matched.length} of ${jobTerms.length} unique job terms found in the resume.`;
+
+        document.getElementById("matched").textContent =
+            matched.length ? matched.join(" · ") : "No matching terms found.";
+
+        document.getElementById("missing").textContent =
+            missing.length ? missing.join(" · ") : "No missing terms found.";
+
+        document.getElementById("results").style.display = "block";
+        statusText.textContent =
+            "Demo analysis complete. This is a simple keyword score, not an AI assessment.";
+
+    } catch (error) {
+        statusText.textContent = error.message;
+    }
+});
+</script>
+
+</body>
+</html>
+```
